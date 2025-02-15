@@ -1,0 +1,28 @@
+# ベースイメージとしてPython 3.12を使用
+FROM mcr.microsoft.com/devcontainers/python:1-3.12-bullseye
+
+# 開発ユーザーの作成
+ARG USERNAME=cursor
+ARG USER_UID=2000
+ARG USER_GID=2000  # 確実に数値で指定する
+
+RUN groupadd --gid ${USER_GID} ${USERNAME} \
+    && useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME} \
+    && apt-get update && apt-get install -y curl git \
+    && rm -rf /var/lib/apt/lists/*
+
+# uv を /usr/local/bin にインストール
+RUN curl -fsSL https://astral.sh/uv/install.sh | sh \
+    && mv ~/.local/bin/uv /usr/local/bin/
+
+RUN chsh -s /bin/bash ${USERNAME}
+# ユーザーのホームディレクトリに `.bashrc` を作成・設定
+RUN echo "export HISTFILE=~/.bash_history" >> /home/${USERNAME}/.bashrc \
+    && echo "export HISTSIZE=1000" >> /home/${USERNAME}/.bashrc \
+    && echo "export HISTCONTROL=ignoredups:erasedups" >> /home/${USERNAME}/.bashrc \
+    && echo "shopt -s histappend" >> /home/${USERNAME}/.bashrc \
+    && echo "PROMPT_COMMAND='history -a'" >> /home/${USERNAME}/.bashrc
+
+# ユーザーの設定
+USER ${USERNAME}
+WORKDIR /workspace
