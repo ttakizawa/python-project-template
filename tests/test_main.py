@@ -1,5 +1,5 @@
 import pytest
-from src.main import main
+from src.template.main import main
 
 def test_main(capfd):
     main()

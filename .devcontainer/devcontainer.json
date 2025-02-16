@@ -1,0 +1,27 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/python
+{
+	"name": "Python Dev Container with UV",
+	"build": {
+		"dockerfile": "../Dockerfile.dev",
+		"context": "..",
+		"args": {
+			"VARIANT": "3.12-bullseye"
+		}
+	},
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"terminal.integrated.defaultProfile.linux": "bash"
+			},
+			"extensions": [
+				"ms-python.python",
+				"ms-python.vscode-pylance"
+			]
+		}
+	},
+	"features": {},
+	"forwardPorts": [],
+	"postCreateCommand": "uv venv .venv && uv pip install -r requirements.txt",
+	"remoteUser": "cursor"
+}
